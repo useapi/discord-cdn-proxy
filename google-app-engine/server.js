@@ -69,9 +69,9 @@ async function refreshURL(request) {
         if (!process.env.DISCORD_TOKEN)
             return withCORS(request, new Response(JSON.stringify({ message: `DISCORD_TOKEN is not configured` }), { status: 400 }));
 
-        const urlStart = request.url.indexOf('?');
-
-        const url = request.url.substring(urlStart + 1);
+        const decoded = decodeURIComponent(request.url);
+        const urlStart = decoded.indexOf('?');
+        const url = decoded.substring(urlStart + 1);
 
         // Check for heart beat request
         if (url == const_heartbeat) {

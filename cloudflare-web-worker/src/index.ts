@@ -66,8 +66,9 @@ export default {
 			if (!env.DISCORD_TOKEN)
 				return withCORS(request, Response.json(`DISCORD_TOKEN is not configured`, { status: 400 }));
 
-			const urlStart = request.url.indexOf('?');
-			const attachment_url = parseValidURL(request.url.substring(urlStart + 1));
+			const decoded = decodeURIComponent(request.url);
+			const urlStart = decoded.indexOf('?');
+			const attachment_url = parseValidURL(decoded.substring(urlStart + 1));
 			if (urlStart < 0 || attachment_url === false)
 				return withCORS(request, Response.json(`Provide Discord CDN url after ?. Example: https://your-web-site.com/discord-cdn-proxy?https://cdn.discordapp.com/attachments/channel/message/filename.ext`, { status: 400 }));
 
