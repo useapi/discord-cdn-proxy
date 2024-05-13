@@ -1,0 +1,12 @@
+name = "discord-cdn-proxy"
+main = "src/index.ts"
+compatibility_date = "2023-07-16"
+
+# Uncomment below if you want to use specific to your website routing.
+# Make sure to update useapi.net to desired values.
+# routes = [ { pattern = "demo.useapi.net/discord-cdn-proxy/*", zone_name = "useapi.net" } ]
+
+# Uncomment below if you want to use R2 bucket for caching.
+# [[r2_buckets]]
+# binding = 'DISCORD_CDN_PROXY_BUCKET'
+# bucket_name = 'discord-cdn-proxy-cache'

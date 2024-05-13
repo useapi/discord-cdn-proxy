@@ -1,0 +1,16 @@
+{
+  "name": "discord-cdn-proxy",
+  "version": "1.0.0",
+  "description": "Discord CDN proxy",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "debug": "DISCORD_TOKEN='your-discord-token' DISCORD_CDN_PROXY_URL='http://localhost:8090/' node server.js"
+  },
+  "author": "useapi.net",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
