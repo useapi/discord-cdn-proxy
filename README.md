@@ -40,7 +40,7 @@ Two deployment options covered in the article:
 You can choose either option based on your preferences.  
 
 The [source code](https://github.com/useapi/discord-cdn-proxy/blob/main/google-app-engine/server.js) for Google App Engine is a standard Node.js Express server.  
-You can deploy in any compatible environment, see instructions below:  
+You can deploy it in any compatible environment, see the instructions below:  
 * [Vercel](https://vercel.com/guides/using-express-with-vercel)
 * [Heroku](https://devcenter.heroku.com/articles/deploying-nodejs)
 * [Glitch](https://glitch.com/~hello-express)
