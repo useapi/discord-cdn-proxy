@@ -20,8 +20,9 @@ Custom response header `x-discord-cdn-proxy` will be set to one of following val
 * `original` - provided link query parameters `?ex=EXPIRES&is=ISSUED&hm=CODE` indicate that link is still "fresh"
 * `refreshed` - call to `https://discord.com/api/v9/attachments/refresh-urls` Discord API was made to retrieve refreshed link
 * `memory` - refreshed link returned from the memory cache
-* `bucket` - refreshed link returned from the R2 bucket cache 
+* `bucket` - refreshed link returned from the R2 bucket cache (optional for Cloudflare Worker deployment)
 
+[Diagram](https://useapi.net/assets/images/articles/discord-cdn-proxy.svg)  
 ![](https://useapi.net/assets/images/articles/discord-cdn-proxy.svg)
 
 Original Discord CDN link [open](https://cdn.discordapp.com/attachments/1239264794394234985/1239266735992078447/vault_boy.png?ex=66424c96&is=6640fb16&hm=0b3d3210b4ea0916d5c8c0b2d998a4f4b64f5b95b79cdb9b58ff96b8287dace4&) (`404: This content is no longer available.`)  
@@ -29,85 +30,23 @@ Discord CDN link using proxy [open](https://demo.useapi.net/discord-cdn-proxy/?h
 Discord CDN link using proxy (without query parameters) [open](https://demo.useapi.net/discord-cdn-proxy/?https://cdn.discordapp.com/attachments/1239264794394234985/1239266735992078447/vault_boy.png)  
 
 Two deployment options covered in the article: 
-- Cloudflare Worker [proceed](#deploy-cloudflare-worker).  
+- Google App Engine [instructions](#deploy-google-app-engine).    
+  F1 instance is free to run 24/7/365 [link](https://cloud.google.com/appengine/docs/standard/quotas#Instances).    
+  Google **asks** for a credit card or other payment method when you sign up for the Free Trial/Free Tier [link](https://cloud.google.com/free/docs/free-cloud-features#why-credit-card).
+- Cloudflare Worker [instructions](#deploy-cloudflare-worker).  
   100K requests per day are included in the free tier account [link](https://developers.cloudflare.com/workers/platform/pricing/).  
   Cloudflare **does not** require the entering of payment information.    
-- Google App Engine [proceed](#deploy-google-app-engine).    
-  F1 instance is free to run 24/7/365 [link](https://cloud.google.com/appengine/docs/standard/quotas#Instances).    
-  Google **asks** for a credit card or other payment method when you sign up for the Free Trial/Free Tier [link](https://cloud.google.com/free/docs/free-cloud-features#why-credit-card).    
 
 You can choose either option based on your preferences.  
 
-## Deploy Cloudflare Worker
-
-Assuming you have free Cloudflare account [setup](https://developers.cloudflare.com/fundamentals/setup/account/create-account/) completed  and installed [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/).
-
-Clone git repository [discord-cdn-proxy](https://github.com/useapi/discord-cdn-proxy?tab=readme-ov-file).  
-Navigate to `./cloudflare-web-worker` folder and install npm packages:
-```bash
-npm install
-```
-
-If you are familiar with Cloudflare Workers, you can adjust the deployment configuration in the `wrangler.toml` file.   
-You can fine-tune it later at any time once you have acquired some initial experience.  
-
-Deploy Worker: 
-```bash
-wrangler deploy --keep-vars 
-```
-
-Notice deployment url which will look like `https://discord-cdn-proxy.your-user-name.workers.dev`    
-You can use that url to test by adding Discord link at the end after  `?`  
-Example: `https://your-discord-cdn-proxy-url/?https://cdn.discordapp.com/attachments/channel/message/filename.ext`    
-
-Create `.secrets` file with following JSON: 
-```json
-{
-    "DISCORD_TOKEN": "discord token",
-    "CHANNELS": "['channel id', 'another channel id', 'channel id etc']"
-}
-```
-How to [extract discord token](https://useapi.net/docs/start-here/setup-midjourney#obtain-discord-token).  
-Optional array `CHANNELS` defines which Discord channels should be proxied.  
-You can remove it but it is strongly not recommended for public proxies.  
-
-Deploy secrets from local file `.secrets`: 
-```bash
-wrangler secret:bulk .secrets
-```
-
-Now you can test deployed proxy.  
-Example (adjust to include actual values): `https://your-discord-cdn-proxy-url/?https://cdn.discordapp.com/attachments/channel/message/filename.ext`  
-
-### Debugging locally
-
-Create `.dev.vars` file with following text: 
-```javascript
-DISCORD_TOKEN="discord token"
-CHANNELS=["channel id", "another channel id", "channel id etc"]
-```
-
-Run local development using `.dev.var` secrets:
-```bash
-wrangler dev  
-```
-
-### Refreshing Discord links using an R2 bucket for caching
-
-This allows you to store refreshed Discord links in a Cloudflare R2 bucket to minimize the number of calls to the Discord API. 
-
-To create an R2 bucket, execute:
-```bash
-wrangler r2 bucket create discord-cdn-proxy-cache
-wrangler r2 bucket list
-```
-
-Uncomment `r2_buckets` configuration in `wrangler.toml` file.
-
-Redeploy Worker:
-```bash
-wrangler deploy --keep-vars 
-```
+The [source code](https://github.com/useapi/discord-cdn-proxy/blob/main/google-app-engine/server.js) for Google App Engine is a standard Node.js Express server.  
+You can deploy in any compatible environment, see instructions below:  
+* [Vercel](https://vercel.com/guides/using-express-with-vercel)
+* [Heroku](https://devcenter.heroku.com/articles/deploying-nodejs)
+* [Glitch](https://glitch.com/~hello-express)
+* [Microsoft Azure](https://learn.microsoft.com/en-us/azure/cloud-services/cloud-services-nodejs-develop-deploy-express-app)
+* [Amazon AWS](https://docs.aws.amazon.com/amplify/latest/userguide/deploy-express-server.html)
+* [Oracle Cloud](https://docs.oracle.com/en-us/iaas/developer-tutorials/tutorials/node-on-ol/01oci-ol-node-summary.htm)
 
 ## Deploy Google App Engine
 
@@ -203,4 +142,75 @@ Update DISCORD_TOKEN value in your `package.json` file:
 Execute script with npm:
 ```bash
 npm run debug
+```
+
+## Deploy Cloudflare Worker
+
+Assuming you have free Cloudflare account [setup](https://developers.cloudflare.com/fundamentals/setup/account/create-account/) completed  and installed [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/).
+
+Clone git repository [discord-cdn-proxy](https://github.com/useapi/discord-cdn-proxy?tab=readme-ov-file).  
+Navigate to `./cloudflare-web-worker` folder and install npm packages:
+```bash
+npm install
+```
+
+If you are familiar with Cloudflare Workers, you can adjust the deployment configuration in the `wrangler.toml` file.   
+You can fine-tune it later at any time once you have acquired some initial experience.  
+
+Deploy Worker: 
+```bash
+wrangler deploy --keep-vars 
+```
+
+Notice deployment url which will look like `https://discord-cdn-proxy.your-user-name.workers.dev`    
+You can use that url to test by adding Discord link at the end after  `?`  
+Example: `https://your-discord-cdn-proxy-url/?https://cdn.discordapp.com/attachments/channel/message/filename.ext`    
+
+Create `.secrets` file with following JSON: 
+```json
+{
+    "DISCORD_TOKEN": "discord token",
+    "CHANNELS": "['channel id', 'another channel id', 'channel id etc']"
+}
+```
+How to [extract discord token](https://useapi.net/docs/start-here/setup-midjourney#obtain-discord-token).  
+Optional array `CHANNELS` defines which Discord channels should be proxied.  
+You can remove it but it is strongly not recommended for public proxies.  
+
+Deploy secrets from local file `.secrets`: 
+```bash
+wrangler secret:bulk .secrets
+```
+
+Now you can test deployed proxy.  
+Example (adjust to include actual values): `https://your-discord-cdn-proxy-url/?https://cdn.discordapp.com/attachments/channel/message/filename.ext`  
+
+### Debugging locally
+
+Create `.dev.vars` file with following text: 
+```javascript
+DISCORD_TOKEN="discord token"
+CHANNELS=["channel id", "another channel id", "channel id etc"]
+```
+
+Run local development using `.dev.var` secrets:
+```bash
+wrangler dev  
+```
+
+### Refreshing Discord links using an R2 bucket for caching
+
+This allows you to store refreshed Discord links in a Cloudflare R2 bucket to minimize the number of calls to the Discord API. 
+
+To create an R2 bucket, execute:
+```bash
+wrangler r2 bucket create discord-cdn-proxy-cache
+wrangler r2 bucket list
+```
+
+Uncomment `r2_buckets` configuration in `wrangler.toml` file.
+
+Redeploy Worker:
+```bash
+wrangler deploy --keep-vars 
 ```
