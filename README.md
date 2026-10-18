@@ -7,6 +7,7 @@ Attempt to retrieve Discord CDN attachments URL without above query parameters o
 In practical terms this means that you can no longer link attachments from Discord on your website, share them on Reddit, Facebook.  
 
 This article provides you with effective solution to continue sharing your Discord CDN content publicly without incurring any costs.  
+Full walkthrough with diagrams: [Discord CDN Proxy article](https://useapi.net/docs/articles/discord-cdn-proxy?utm_source=github.com&utm_medium=referral&utm_campaign=discord-cdn-proxy) on useapi.net.  
 
 The Discord CND proxy especially handy for users of [Midjourney API](https://useapi.net/docs/api-v2), [Pika API](https://useapi.net/docs/api-pika-v1) or [InsightFaceSwap API](https://useapi.net/docs/api-faceswap-v1).
 
@@ -237,3 +238,7 @@ Redeploy Worker:
 ```bash
 wrangler deploy --keep-vars 
 ```
+
+## License
+
+The code in this repository is released under the [MIT License](./LICENSE). It covers the proxy code only, not the useapi.net service or API.
