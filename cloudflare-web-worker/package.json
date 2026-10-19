@@ -2,11 +2,9 @@
   "name": "discord-cdn-proxy",
   "version": "0.0.0",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20230710.1",
-    "@types/node": "^20.4.2",
-    "typescript": "^5.1.6",
-    "vitest": "^0.33.0",
-    "wrangler": "3.2.0"
+    "@cloudflare/workers-types": "^5.20261018.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.151.1"
   },
   "private": true,
   "scripts": {

@@ -2,3 +2,6 @@
 **/*/.secrets
 **/*/node_modules
 **/*/.env.yaml
+
+# local wrangler dev state
+**/.wrangler/

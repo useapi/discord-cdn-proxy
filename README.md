@@ -202,7 +202,7 @@ You can remove it but it is strongly not recommended for public proxies.
 
 Deploy secrets from local file `.secrets`: 
 ```bash
-wrangler secret:bulk .secrets
+wrangler secret bulk .secrets
 ```
 
 Now you can test deployed proxy.  
